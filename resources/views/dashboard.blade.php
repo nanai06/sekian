@@ -609,7 +609,7 @@
         <div class="koin-card">
             <div class="koin-top">
                 <span>🪙</span>
-                <span class="koin-angka">150</span> {{-- TODO: ganti dengan {{ Auth::user()->ayu_koin }} --}}
+                <span class="koin-angka">{{ $saldoKoin }}</span>
             </div>
             <div class="koin-label">Ayu Koin</div>
             <a href="#" class="koin-link">Tukar Koin →</a> {{-- TODO: arahkan ke halaman tukar koin --}}
@@ -620,7 +620,7 @@
 
             {{-- Card 1: Produk Dijual (belum connect ke data) --}}
             <a href="#" class="shortcut-item">
-                <div class="shortcut-num">7
+                <div class="shortcut-num">{{ $totalProdukDijual }}
                     <iconify-icon icon="fluent:shopping-bag-48-filled" width="50" style="opacity:0.5;"></iconify-icon>
                 </div>
                 <div class="shortcut-label">Produk Dijual</div>
@@ -630,7 +630,7 @@
 
             {{-- Card 2: Produk Terjual (belum connect ke data) --}}
             <a href="#" class="shortcut-item">
-                <div class="shortcut-num">4
+                <div class="shortcut-num">{{ $totalProdukTerjual }}
                     <iconify-icon icon="streamline-block:shopping-bag" width="45" style="opacity:0.5;"></iconify-icon>
                 </div>
                 <div class="shortcut-label">Produk Terjual</div>
@@ -640,7 +640,7 @@
 
             {{-- Card 3: Daur Ulang → redirect ke halaman ayu-daur-ulang --}}
             <a href="{{ route('ayu-daur-ulang') }}" class="shortcut-item">
-                <div class="shortcut-num">5
+                <div class="shortcut-num">{{ $totalDaurUlang }}
                     <iconify-icon icon="fontisto:recycle" width="50" style="opacity:0.5;"></iconify-icon>
                 </div>
                 <div class="shortcut-label">Daur Ulang</div>

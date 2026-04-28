@@ -6,8 +6,6 @@ use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\Order;
 use App\Models\RecyclingSubmission;
-use App\Models\Coin;
-use App\Models\CoinHistory;
 
 class DashboardController extends Controller
 {
@@ -25,21 +23,13 @@ class DashboardController extends Controller
             ->count();
         //sama aja bedanya ini di filter lagi produk yg udh terjual / kebeli sm org di kolom status
         
-        $totalProdukDibeli = Product::where('buyer_id', $user->id)
-            ->where('status', 'selesai');
+        $totalProdukDibeli = 0; // tabel ayune_products belum punya kolom buyer_id
         
         $totalDaurUlang = RecyclingSubmission::where('user_id', $user->id)
             ->where('status','confirmed')
             ->count();
 
-        $saldoKoin = Coin::where('user_id', $user->id)
-            ->first();
-        //ambil satu baris pertama yg ketemu sesuai idnya
-
-        $riwayatKoin = CoinHistory::where('user_id', $user->id)
-            ->latest()
-            ->take(5)
-            ->get();
+        $saldoKoin = $user->ayu_koin ?? 0;
 
         $riwayatDaurUlang = RecyclingSubmission::where('user_id', $user->id)
             ->latest() //urutkan yg terbaru
@@ -56,8 +46,8 @@ class DashboardController extends Controller
             'totalProdukDijual',
             'totalProdukTerjual',
             'totalProdukDibeli',
+            'totalDaurUlang',
             'saldoKoin',
-            'riwayatKoin',
             'riwayatDaurUlang',
             'produkTerbaru'
         ));
