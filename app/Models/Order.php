@@ -38,8 +38,8 @@ class Order extends Model
     }
 
     public function orderItems(){
-        return $this->belongsTo(OrderItem::class);
-        //pesanan ini cmn untuk satu produk kan tiap pesanan punya nomro unikny masing"
+        return $this->hasMany(OrderItem::class);
+        //satu pesanan bisa punya banyak item produk
     }
     
 }

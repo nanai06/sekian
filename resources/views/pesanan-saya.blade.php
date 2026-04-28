@@ -101,61 +101,61 @@
     <!-- SEMUA -->
     <div id="tSemua">
 
-        <div class="order-card" data-status="dikirim">
-            <div class="order-thumb">Product<br>Thumb</div>
-            <div class="order-info">
-                <div class="order-name">5X Ceramide Barrier Repair</div>
-                <div class="order-date">5 Mar 2026</div>
-                <div class="order-price">Rp 110.000</div>
-                <div class="order-actions">
-                    <a href="{{ route('lacak-pesanan') }}" class="btn-lacak" style="text-decoration:none;">Lacak Pesanan</a>
-                    <a href="{{ route('detail-pesanan') }}" class="btn-detail" style="text-decoration:none;">Lihat Detail</a>
-                </div>
-            </div>
-            <div class="order-status"><span class="status-badge status-dikirim">Dikirim</span></div>
-        </div>
+        @forelse($orders as $order)
+            @php
+                // Ambil produk pertama dari order items
+                $firstItem = $order->orderItems->first();
+                $product = $firstItem?->product;
+                $productName = $product->nama_produk ?? ($order->catatan ?? 'Pesanan #' . $order->id);
+                $productFoto = $product->foto ?? null;
 
-        <div class="order-card" data-status="diproses">
-            <div class="order-thumb">Product<br>Thumb</div>
-            <div class="order-info">
-                <div class="order-name">Holyshield Sunscreen</div>
-                <div class="order-date">3 Mar 2026</div>
-                <div class="order-price">Rp 90.000</div>
-                <div class="order-actions">
-                    <button class="btn-lacak">Lacak Pesanan</button>
-                    <button class="btn-detail">Lihat Detail</button>
-                </div>
-            </div>
-            <div class="order-status"><span class="status-badge status-diproses">Diproses</span></div>
-        </div>
+                // Map status ke class CSS
+                $statusMap = [
+                    'menunggu_pembayaran' => ['label' => 'Belum Dibayar', 'class' => 'status-dibayar', 'filter' => 'belum'],
+                    'dibayar' => ['label' => 'Dibayar', 'class' => 'status-dibayar', 'filter' => 'belum'],
+                    'diproses' => ['label' => 'Diproses', 'class' => 'status-diproses', 'filter' => 'diproses'],
+                    'dikirim' => ['label' => 'Dikirim', 'class' => 'status-dikirim', 'filter' => 'dikirim'],
+                    'selesai' => ['label' => 'Selesai', 'class' => 'status-selesai', 'filter' => 'selesai'],
+                    'dibatalkan' => ['label' => 'Dibatalkan', 'class' => 'status-batal', 'filter' => 'dibatalkan'],
+                ];
+                $statusInfo = $statusMap[$order->status] ?? ['label' => $order->status, 'class' => 'status-diproses', 'filter' => 'diproses'];
+                $itemCount = $order->orderItems->count();
+            @endphp
 
-        <div class="order-card" data-status="selesai">
-            <div class="order-thumb">Product<br>Thumb</div>
-            <div class="order-info">
-                <div class="order-name">Brightening Face Toner</div>
-                <div class="order-date">1 Mar 2026</div>
-                <div class="order-price">Rp 60.000</div>
-                <div class="order-actions">
-                    <button class="btn-lacak">Lacak Pesanan</button>
-                    <button class="btn-detail">Lihat Detail</button>
+            <div class="order-card" data-status="{{ $statusInfo['filter'] }}">
+                {{-- Thumbnail produk --}}
+                <div class="order-thumb">
+                    @if($productFoto)
+                        <img src="{{ asset('storage/' . $productFoto) }}" style="width:80px;height:80px;object-fit:cover;border-radius:12px;">
+                    @else
+                        Product<br>Thumb
+                    @endif
+                </div>
+                <div class="order-info">
+                    <div class="order-name">
+                        {{ $productName }}
+                        @if($itemCount > 1)
+                            <span style="font-size:12px;color:#9a6a6a;font-weight:400;"> +{{ $itemCount - 1 }} produk lainnya</span>
+                        @endif
+                    </div>
+                    <div class="order-date">{{ $order->created_at->format('d M Y') }}</div>
+                    <div class="order-price">Rp {{ number_format($order->total_bayar, 0, ',', '.') }}</div>
+                    <div class="order-actions">
+                        <a href="{{ route('lacak-pesanan') }}" class="btn-lacak" style="text-decoration:none;">Lacak Pesanan</a>
+                        <a href="{{ route('detail-pesanan') }}" class="btn-detail" style="text-decoration:none;">Lihat Detail</a>
+                    </div>
+                </div>
+                <div class="order-status">
+                    <span class="status-badge {{ $statusInfo['class'] }}">{{ $statusInfo['label'] }}</span>
                 </div>
             </div>
-            <div class="order-status"><span class="status-badge status-selesai">Selesai</span></div>
-        </div>
-
-        <div class="order-card" data-status="belum">
-            <div class="order-thumb">Product<br>Thumb</div>
-            <div class="order-info">
-                <div class="order-name">Moisturizer SPF 30</div>
-                <div class="order-date">28 Feb 2026</div>
-                <div class="order-price">Rp 75.000</div>
-                <div class="order-actions">
-                    <button class="btn-lacak">Lacak Pesanan</button>
-                    <button class="btn-detail">Lihat Detail</button>
-                </div>
+        @empty
+            <div style="text-align:center; padding:60px 0; color:#9a6a6a;">
+                <div style="font-size:40px; margin-bottom:12px;">🛒</div>
+                <div style="font-size:15px; font-weight:600;">Belum ada pesanan</div>
+                <div style="font-size:12px; margin-top:4px; color:#b4a0a0;">Yuk mulai belanja di Ayu Belanja!</div>
             </div>
-            <div class="order-status"><span class="status-badge status-dibayar">Belum Dibayar</span></div>
-        </div>
+        @endforelse
 
     </div>
 </div>

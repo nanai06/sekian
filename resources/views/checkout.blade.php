@@ -722,6 +722,12 @@
         this.innerHTML = '<iconify-icon icon="ph:spinner-gap-bold" width="18" style="animation:spin 1s linear infinite;"></iconify-icon> Memproses...';
         this.disabled = true;
 
+        // Kumpulkan nama produk dari summary
+        const produkNames = [];
+        document.querySelectorAll('.summary-produk-nama').forEach(el => {
+            produkNames.push(el.textContent.trim());
+        });
+
         fetch('{{ route("checkout.process") }}', {
             method: 'POST',
             headers: {
@@ -735,7 +741,8 @@
                 total        : total,
                 nama         : nama,
                 hp           : hp,
-                metode_bayar : document.getElementById('bayarVal').textContent
+                metode_bayar : document.getElementById('bayarVal').textContent,
+                produk_names : produkNames
             })
         })
         .then(res => res.json())
@@ -745,10 +752,24 @@
             this.disabled = false;
 
             if (data.token) {
+                const savedOrderId = data.order_id;
                 // Tampilkan popup Midtrans
                 window.snap.pay(data.token, {
                     onSuccess: function (result) {
-                        window.location.href = "{{ route('pesanan-berhasil') }}";
+                        // Update status order ke 'dibayar'
+                        fetch('{{ route("order.update-status") }}', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': csrfToken
+                            },
+                            body: JSON.stringify({
+                                order_id: savedOrderId,
+                                status: 'diproses'
+                            })
+                        }).finally(() => {
+                            window.location.href = "{{ route('pesanan-berhasil') }}";
+                        });
                     },
                     onPending: function (result) {
                         showToast('⏳ Menunggu pembayaran...');

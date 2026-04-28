@@ -620,7 +620,7 @@
 
             {{-- Card 2: Produk Terjual (belum connect ke data) --}}
             <a href="{{ route('ayu-belanja') }}" class="shortcut-item">
-                <div class="shortcut-num">{{ $totalProdukTerjual }}
+                <div class="shortcut-num">{{ $totalProdukDibeli }}
                     <iconify-icon icon="streamline-block:shopping-bag" width="45" style="opacity:0.5;"></iconify-icon>
                 </div>
                 <div class="shortcut-label">Produk Dibeli</div>

@@ -59,6 +59,9 @@ Route::get('/checkout', function () {
 Route::post('/checkout/process', [App\Http\Controllers\OrderController::class, 'process'])
     ->middleware(['auth'])->name('checkout.process');
 
+Route::post('/order/update-status', [App\Http\Controllers\OrderController::class, 'updateStatus'])
+    ->middleware(['auth'])->name('order.update-status');
+
 Route::get('/chat-penjual', function () {
     return view('chat-penjual');
 })->middleware(['auth'])->name('chat-penjual');
@@ -72,7 +75,11 @@ Route::get('/pesanan-berhasil', function () {
 })->middleware(['auth'])->name('pesanan-berhasil');
 
 Route::get('/pesanan-saya', function () {
-    return view('pesanan-saya');
+    $orders = \App\Models\Order::where('buyer_id', auth()->id())
+        ->with(['orderItems.product'])
+        ->latest()
+        ->get();
+    return view('pesanan-saya', compact('orders'));
 })->middleware(['auth'])->name('pesanan-saya');
 
 Route::get('/detail-pesanan', function () {

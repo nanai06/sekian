@@ -23,7 +23,7 @@ class DashboardController extends Controller
             ->count();
         //sama aja bedanya ini di filter lagi produk yg udh terjual / kebeli sm org di kolom status
         
-        $totalProdukDibeli = 0; // tabel ayune_products belum punya kolom buyer_id
+        $totalProdukDibeli = Order::where('buyer_id', $user->id)->count();
         
         $totalDaurUlang = RecyclingSubmission::where('user_id', $user->id)
             ->where('status','confirmed')
