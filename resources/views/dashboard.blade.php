@@ -264,7 +264,7 @@
             flex: 2;
             display: flex;
             align-items: center;
-            gap: 240px;
+            gap: 410px;
         }
 
         .shortcut-label {
@@ -618,22 +618,12 @@
         {{-- 3 Shortcut Card --}}
         <div class="shortcut-grid">
 
-            {{-- Card 1: Produk Dijual (belum connect ke data) --}}
-            <a href="#" class="shortcut-item">
-                <div class="shortcut-num">{{ $totalProdukDijual }}
-                    <iconify-icon icon="fluent:shopping-bag-48-filled" width="50" style="opacity:0.5;"></iconify-icon>
-                </div>
-                <div class="shortcut-label">Produk Dijual</div>
-                <div class="shortcut-sub">2 bulan ini</div>
-                <div class="shortcut-bottom"></div>
-            </a>
-
             {{-- Card 2: Produk Terjual (belum connect ke data) --}}
-            <a href="#" class="shortcut-item">
+            <a href="{{ route('ayu-belanja') }}" class="shortcut-item">
                 <div class="shortcut-num">{{ $totalProdukTerjual }}
                     <iconify-icon icon="streamline-block:shopping-bag" width="45" style="opacity:0.5;"></iconify-icon>
                 </div>
-                <div class="shortcut-label">Produk Terjual</div>
+                <div class="shortcut-label">Produk Dibeli</div>
                 <div class="shortcut-sub">1 minggu ini</div>
                 <div class="shortcut-bottom"></div>
             </a>
@@ -644,7 +634,7 @@
                     <iconify-icon icon="fontisto:recycle" width="50" style="opacity:0.5;"></iconify-icon>
                 </div>
                 <div class="shortcut-label">Daur Ulang</div>
-                <div class="shortcut-sub">2 bulan ini</div>
+                <div class="shortcut-sub">1 bulan ini</div>
                 <div class="shortcut-bottom"></div>
             </a>
         </div>

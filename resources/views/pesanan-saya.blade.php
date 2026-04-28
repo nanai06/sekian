@@ -9,19 +9,6 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
         body { background: #fff; color: #3b1a1a; }
 
-        .navbar { display: flex; align-items: center; justify-content: space-between; padding: 16px 40px; border-bottom: 1px solid #f5e0e0; background: white; position: sticky; top: 0; z-index: 100; }
-        .nav-logo img { height: 36px; width: auto; object-fit: contain; }
-        .nav-links { display: flex; gap: 36px; list-style: none; }
-        .nav-links a { text-decoration: none; font-size: 14px; font-weight: 500; color: #7a4a4a; }
-        .nav-links a:hover { color: #e07080; }
-        .nav-right { display: flex; align-items: center; gap: 18px; }
-        .search-box { display: flex; align-items: center; background: #f9f0f2; border-radius: 50px; padding: 8px 16px; gap: 8px; width: 220px; }
-        .search-box input { border: none; background: transparent; outline: none; font-size: 13px; width: 100%; font-family: 'Poppins', sans-serif; }
-        .search-box input::placeholder { color: #c4a0a0; }
-        .nav-icon { position: relative; cursor: pointer; font-size: 20px; color: #7a4a4a; text-decoration: none; }
-        .badge { position: absolute; top: -6px; right: -6px; background: #e07080; color: white; font-size: 9px; font-weight: 700; width: 16px; height: 16px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
-        .avatar { width: 38px; height: 38px; border-radius: 50%; background: #f4a0aa; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; color: white; text-decoration: none; }
-
         /* CONTENT */
         .content { padding: 36px 40px; }
 
@@ -96,23 +83,7 @@
 </head>
 <body>
 
-<nav class="navbar">
-    <div class="nav-logo">
-        <a href="{{ route('dashboard') }}"><img src="{{ asset('images/AYU-NE.png') }}" alt="AYU-NE"></a>
-    </div>
-    <ul class="nav-links">
-        <li><a href="{{ route('dashboard') }}">Home</a></li>
-        <li><a href="{{ route('ayu-belanja') }}">Ayu Belanja</a></li>
-        <li><a href="{{ route('ayu-daur-ulang') }}">Ayu Daur Ulang</a></li>
-        <li><a href="{{ route('ayu-koin') }}">Ayu Koin</a></li>
-    </ul>
-    <div class="nav-right">
-        <div class="search-box"><span>🔍</span><input type="text" placeholder="Cari produk..."></div>
-        <a href="{{ route('notifikasi') }}" class="nav-icon">🔔<div class="badge">•</div></a>
-        <a href="{{ route('keranjang') }}" class="nav-icon">🛒<div class="badge">2</div></a>
-        <a href="{{ route('profil') }}" class="avatar">A</a>
-    </div>
-</nav>
+@include('layouts.navigation')
 
 <div class="content">
     <h1>Pesanan Saya</h1>
