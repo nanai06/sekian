@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <script src="https://code.iconify.design/iconify-icon/2.1.0/iconify-icon.min.js"></script>
     <title>Ayu Belanja - AYU-NE</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -209,11 +210,11 @@
 <!-- FILTER BAR — toggle Best Seller -->
 <div class="filter-bar">
     <div class="filter-tabs">
-        <div class="tab active" onclick="setTab('semua',this)">Semua <span class="tab-badge">20</span></div>
-        <div class="tab" onclick="setTab('makeup',this)">Makeup <span class="tab-badge">6</span></div>
-        <div class="tab" onclick="setTab('skincare',this)">Skincare <span class="tab-badge">8</span></div>
-        <div class="tab" onclick="setTab('alat',this)">Alat Makeup <span class="tab-badge">3</span></div>
-        <div class="tab" onclick="setTab('isulang',this)">Isi Ulang <span class="tab-badge">3</span></div>
+        <div class="tab active" onclick="setTab('semua',this)">Semua <span class="tab-badge">{{ $products->count() }}</span></div>
+        <div class="tab" onclick="setTab('makeup',this)">Makeup <span class="tab-badge">{{ $products->where('kategori','makeup')->count() }}</span></div>
+        <div class="tab" onclick="setTab('skincare',this)">Skincare <span class="tab-badge">{{ $products->where('kategori','skincare')->count() }}</span></div>
+        <div class="tab" onclick="setTab('alat',this)">Alat Makeup <span class="tab-badge">{{ $products->where('kategori','alat')->count() }}</span></div>
+        <div class="tab" onclick="setTab('isulang',this)">Isi Ulang <span class="tab-badge">{{ $products->where('kategori','isulang')->count() }}</span></div>
     </div>
     <div class="filter-right">
         <label class="toggle-wrap">
@@ -233,93 +234,69 @@
     <div class="prod-header">
         <div class="prod-title">Produk Terbaru 🌸</div>
         <div class="prod-meta">
-            <span class="products-count" id="countLabel">20 produk</span>
+            <span class="products-count" id="countLabel">{{ $products->count() }} produk</span>
         </div>
     </div>
 
     <div class="product-grid" id="productGrid">
 
-        @php
-        $products = [
-            // SKINCARE
-            ['nama'=>'5X Ceramide Barrier Repair Moisture Gel','brand'=>'Skintific',          'harga'=>95000,  'harga_asli'=>190000,'diskon'=>50,'kategori'=>'skincare','populer'=>3, 'bestseller'=>false,'seller_rating'=>4.8,'ulasan'=>142,'kualitas'=>65,'img'=>'https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?q=80&w=500&auto=format&fit=crop'],
-            ['nama'=>'Brightening Face Toner',                 'brand'=>'Whitelab',           'harga'=>45000,  'harga_asli'=>90000, 'diskon'=>50,'kategori'=>'skincare','populer'=>7, 'bestseller'=>true, 'seller_rating'=>4.7,'ulasan'=>238,'kualitas'=>30,'img'=>'https://images.unsplash.com/photo-1556228720-195a672e8a03?q=80&w=500&auto=format&fit=crop'],
-            ['nama'=>'Holyshield Sunscreen SPF 50',            'brand'=>'Somethinc',          'harga'=>75000,  'harga_asli'=>150000,'diskon'=>50,'kategori'=>'skincare','populer'=>5, 'bestseller'=>false,'seller_rating'=>4.9,'ulasan'=>87, 'kualitas'=>80,'img'=>'https://images.unsplash.com/photo-1599305090598-fe179d501227?q=80&w=500&auto=format&fit=crop'],
-            ['nama'=>'Cica Beauty Serum',                      'brand'=>'Npure',              'harga'=>55000,  'harga_asli'=>110000,'diskon'=>50,'kategori'=>'skincare','populer'=>6, 'bestseller'=>false,'seller_rating'=>4.6,'ulasan'=>61, 'kualitas'=>55,'img'=>'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?q=80&w=500&auto=format&fit=crop'],
-            ['nama'=>'Moisturizing Gel Cream',                 'brand'=>'Skintific',          'harga'=>89000,  'harga_asli'=>178000,'diskon'=>50,'kategori'=>'skincare','populer'=>11,'bestseller'=>true, 'seller_rating'=>4.9,'ulasan'=>320,'kualitas'=>90,'img'=>'https://images.unsplash.com/photo-1556228578-8c89e6adf883?q=80&w=500&auto=format&fit=crop'],
-            ['nama'=>'Niacinamide 10% + Zinc Serum',           'brand'=>'The Ordinary',       'harga'=>120000, 'harga_asli'=>210000,'diskon'=>43,'kategori'=>'skincare','populer'=>14,'bestseller'=>true, 'seller_rating'=>4.8,'ulasan'=>412,'kualitas'=>70,'img'=>'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?q=80&w=500&auto=format&fit=crop'],
-            ['nama'=>'Hydrating Face Wash',                    'brand'=>'Cetaphil',           'harga'=>65000,  'harga_asli'=>110000,'diskon'=>41,'kategori'=>'skincare','populer'=>15,'bestseller'=>false,'seller_rating'=>4.7,'ulasan'=>203,'kualitas'=>85,'img'=>'https://images.unsplash.com/photo-1556228720-195a672e8a03?q=80&w=500&auto=format&fit=crop'],
-            ['nama'=>'Rose Water Toner Mist',                  'brand'=>'Sensatia Botanicals','harga'=>48000,  'harga_asli'=>85000, 'diskon'=>44,'kategori'=>'skincare','populer'=>16,'bestseller'=>false,'seller_rating'=>4.4,'ulasan'=>76, 'kualitas'=>45,'img'=>'https://images.unsplash.com/photo-1580870069867-74c57ee1bb07?q=80&w=500&auto=format&fit=crop'],
-            // MAKEUP
-            ['nama'=>'Instaperfect Matte Lipstick',            'brand'=>'Instaperfect',       'harga'=>35000,  'harga_asli'=>75000, 'diskon'=>53,'kategori'=>'makeup',  'populer'=>2, 'bestseller'=>false,'seller_rating'=>4.3,'ulasan'=>192,'kualitas'=>12,'img'=>'https://images.unsplash.com/photo-1586495777744-4413f21062fa?q=80&w=500&auto=format&fit=crop'],
-            ['nama'=>'Fit Me Foundation',                      'brand'=>'Maybelline',         'harga'=>85000,  'harga_asli'=>130000,'diskon'=>35,'kategori'=>'makeup',  'populer'=>8, 'bestseller'=>true, 'seller_rating'=>4.5,'ulasan'=>311,'kualitas'=>90,'img'=>'https://plus.unsplash.com/premium_photo-1677175230595-87f8721ff703?q=80&w=500&auto=format&fit=crop'],
-            ['nama'=>'Wardah Cushion SPF 40',                  'brand'=>'Wardah',             'harga'=>78000,  'harga_asli'=>130000,'diskon'=>40,'kategori'=>'makeup',  'populer'=>12,'bestseller'=>false,'seller_rating'=>4.6,'ulasan'=>185,'kualitas'=>40,'img'=>'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?q=80&w=500&auto=format&fit=crop'],
-            ['nama'=>'Lip Matte Cream',                        'brand'=>'Implora',            'harga'=>22000,  'harga_asli'=>45000, 'diskon'=>51,'kategori'=>'makeup',  'populer'=>17,'bestseller'=>false,'seller_rating'=>4.2,'ulasan'=>88, 'kualitas'=>35,'img'=>'https://images.unsplash.com/photo-1586495777744-4413f21062fa?q=80&w=500&auto=format&fit=crop'],
-            ['nama'=>'HD Loose Powder',                        'brand'=>'Make Over',          'harga'=>95000,  'harga_asli'=>160000,'diskon'=>41,'kategori'=>'makeup',  'populer'=>18,'bestseller'=>false,'seller_rating'=>4.5,'ulasan'=>134,'kualitas'=>50,'img'=>'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?q=80&w=500&auto=format&fit=crop'],
-            ['nama'=>'Volume Mascara Waterproof',              'brand'=>'Maybelline',         'harga'=>55000,  'harga_asli'=>95000, 'diskon'=>42,'kategori'=>'makeup',  'populer'=>19,'bestseller'=>false,'seller_rating'=>4.6,'ulasan'=>167,'kualitas'=>60,'img'=>'https://plus.unsplash.com/premium_photo-1677175230595-87f8721ff703?q=80&w=500&auto=format&fit=crop'],
-            // ALAT
-            ['nama'=>'Makeup Brush Set 12pcs',                 'brand'=>'Focallure',          'harga'=>25000,  'harga_asli'=>50000, 'diskon'=>50,'kategori'=>'alat',    'populer'=>1, 'bestseller'=>false,'seller_rating'=>4.4,'ulasan'=>45, 'kualitas'=>70,'img'=>'https://images.unsplash.com/photo-1596462502278-27bfdc403348?q=80&w=500&auto=format&fit=crop'],
-            ['nama'=>'Professional Brush Set 18pcs',           'brand'=>'Focallure',          'harga'=>45000,  'harga_asli'=>85000, 'diskon'=>47,'kategori'=>'alat',    'populer'=>13,'bestseller'=>false,'seller_rating'=>4.5,'ulasan'=>97, 'kualitas'=>80,'img'=>'https://images.unsplash.com/photo-1596462502278-27bfdc403348?q=80&w=500&auto=format&fit=crop'],
-            ['nama'=>'Beauty Blender Sponge',                  'brand'=>'Beautyblender',      'harga'=>35000,  'harga_asli'=>60000, 'diskon'=>42,'kategori'=>'alat',    'populer'=>20,'bestseller'=>false,'seller_rating'=>4.7,'ulasan'=>210,'kualitas'=>90,'img'=>'https://images.unsplash.com/photo-1596462502278-27bfdc403348?q=80&w=500&auto=format&fit=crop'],
-            // ISI ULANG
-            ['nama'=>'Toner Refill 200ml',                     'brand'=>'Sensatia Botanicals','harga'=>30000,  'harga_asli'=>60000, 'diskon'=>50,'kategori'=>'isulang', 'populer'=>4, 'bestseller'=>false,'seller_rating'=>4.7,'ulasan'=>29, 'kualitas'=>80,'img'=>'https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?q=80&w=500&auto=format&fit=crop'],
-            ['nama'=>'Micellar Water Refill 400ml',            'brand'=>'Garnier',            'harga'=>40000,  'harga_asli'=>72000, 'diskon'=>44,'kategori'=>'isulang', 'populer'=>9, 'bestseller'=>false,'seller_rating'=>4.5,'ulasan'=>53, 'kualitas'=>75,'img'=>'https://images.unsplash.com/photo-1556228720-195a672e8a03?q=80&w=500&auto=format&fit=crop'],
-            ['nama'=>'Rose Face Mist Refill 300ml',            'brand'=>'Garnier',            'harga'=>40000,  'harga_asli'=>72000, 'diskon'=>44,'kategori'=>'isulang', 'populer'=>9, 'bestseller'=>false,'seller_rating'=>4.5,'ulasan'=>53, 'kualitas'=>70,'img'=>'https://images.unsplash.com/photo-1580870069867-74c57ee1bb07?q=80&w=500&auto=format&fit=crop'],
-        ];
-        @endphp
-
         @foreach($products as $p)
         @php
-            $k      = $p['kualitas'];
+            $k      = $p->kondisi === 'baru' ? 90 : 55;
             $kKelas = $k >= 60 ? 'high' : ($k >= 30 ? 'medium' : 'low');
-            $kTeks  = $k . '% kondisi';
-            $fullStars  = floor($p['seller_rating']);
-            $emptyStars = 5 - $fullStars;
+            $kTeks  = $p->kondisi === 'baru' ? 'Baru' : 'Preloved';
+            $diskon = $p->harga_asli ? round(($p->harga_asli - $p->harga) / $p->harga_asli * 100) : 0;
+            $fullStars  = 4;
+            $emptyStars = 1;
         @endphp
 
         <a class="product-card"
-           href="{{ route('detail-produk') }}"
-           data-kategori="{{ $p['kategori'] }}"
-           data-bestseller="{{ $p['bestseller'] ? 'true' : 'false' }}"
-           data-harga="{{ $p['harga'] }}"
-           data-populer="{{ $p['populer'] }}"
-           data-nama="{{ strtolower($p['nama']) }}">
+           href="{{ route('detail-produk', $p->id) }}"
+           data-kategori="{{ $p->kategori }}"
+           data-bestseller="{{ $p->kondisi === 'baru' ? 'true' : 'false' }}"
+           data-harga="{{ $p->harga }}"
+           data-populer="{{ $p->id }}"
+           data-nama="{{ strtolower($p->nama_produk) }}">
 
             <div class="product-img-wrap">
-                <img src="{{ $p['img'] }}" alt="{{ $p['nama'] }}" loading="lazy">
+                @if(str_starts_with($p->foto, 'http'))
+                    <img src="{{ $p->foto }}" alt="{{ $p->nama_produk }}" loading="lazy">
+                @else
+                    <img src="{{ asset('storage/' . $p->foto) }}" alt="{{ $p->nama_produk }}" loading="lazy">
+                @endif
 
-                {{-- Hanya Best Seller badge, verified dihapus --}}
-                @if($p['bestseller'])
+                @if($p->kondisi === 'baru')
                     <span class="badge-bs">
-                        <iconify-icon icon="ph:fire-bold" width="10"></iconify-icon>
-                        Best Seller
+                        <iconify-icon icon="ph:seal-check-bold" width="10"></iconify-icon>
+                        Baru
                     </span>
                 @endif
 
                 <button class="btn-cart-hover" type="button"
-                        onclick="event.preventDefault(); addToCart(this)">
+                        onclick="event.preventDefault(); event.stopPropagation(); addToCart({{ $p->id }})">
                     + KERANJANG
                 </button>
             </div>
 
             <div class="card-body">
-                <div class="p-brand">{{ $p['brand'] }}</div>
-                <div class="p-name">{{ $p['nama'] }}</div>
+                <div class="p-brand">{{ $p->brand ?? $p->kategori }}</div>
+                <div class="p-name">{{ $p->nama_produk }}</div>
 
-                {{-- Rating toko/penjual --}}
                 <div class="p-rating">
                     <div class="stars">
                         @for($i = 0; $i < $fullStars; $i++)<span class="star">★</span>@endfor
                         @for($i = 0; $i < $emptyStars; $i++)<span class="star empty">★</span>@endfor
                     </div>
-                    <span class="rating-count">{{ $p['seller_rating'] }}</span>
+                    <span class="rating-count">4.5</span>
                     <span class="rating-seller-label">Toko</span>
                 </div>
 
                 <div class="p-price">
-                    Rp {{ number_format($p['harga'],0,',','.') }}
-                    <span class="p-original">Rp {{ number_format($p['harga_asli'],0,',','.') }}</span>
-                    <span class="p-discount">-{{ $p['diskon'] }}%</span>
+                    Rp {{ number_format($p->harga,0,',','.') }}
+                    @if($p->harga_asli)
+                        <span class="p-original">Rp {{ number_format($p->harga_asli,0,',','.') }}</span>
+                        <span class="p-discount">-{{ $diskon }}%</span>
+                    @endif
                 </div>
 
                 <div class="kualitas-row">
@@ -415,12 +392,30 @@
         applyFilter();
     }
 
-    function addToCart(btn) {
-        const badge = document.getElementById('cartBadge');
-        badge.textContent = +badge.textContent + 1;
-        badge.style.transform = 'scale(1.5)';
-        setTimeout(() => badge.style.transform = '', 200);
-        showToast('🛒 Ditambahkan ke keranjang!');
+    function addToCart(productId) {
+        fetch('{{ route("cart.store") }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                'Accept': 'application/json',
+            },
+            body: JSON.stringify({ product_id: productId, quantity: 1 }),
+        })
+        .then(r => r.json())
+        .then(data => {
+            if (data.success) {
+                showToast('🛒 ' + data.message);
+                // update badge di navbar kalau ada
+                const badges = document.querySelectorAll('.badge');
+                badges.forEach(b => {
+                    if (b.closest('a[href*="keranjang"]')) b.textContent = data.cart_count;
+                });
+            } else {
+                showToast('❌ Gagal menambahkan ke keranjang');
+            }
+        })
+        .catch(() => showToast('❌ Terjadi kesalahan, coba lagi'));
     }
 
     function showToast(msg) {

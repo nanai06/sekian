@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <script src="https://code.iconify.design/iconify-icon/2.1.0/iconify-icon.min.js"></script>
     <title>Detail Produk - AYU-NE</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -171,7 +172,7 @@
     <span>›</span>
     <a href="{{ route('ayu-belanja') }}">Skincare</a>
     <span>›</span>
-    <span class="current">5X Ceramide Barrier Repair</span>
+    <span class="current">{{ $product->nama_produk }}</span>
 </div>
 
 <!-- KONTEN -->
@@ -181,23 +182,11 @@
     <div class="img-left">
         <div class="main-img">
             <span class="badge-v-img">✓ Verified</span>
-            <img id="mainImgEl"
-                 src="https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?q=80&w=800&auto=format&fit=crop"
-                 alt="5X Ceramide Barrier Repair Moisture Gel">
-        </div>
-        <div class="thumb-row">
-            <div class="thumb active" onclick="changeImg(this,'https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?q=80&w=800&auto=format&fit=crop')">
-                <img src="https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?q=80&w=200&auto=format&fit=crop">
-            </div>
-            <div class="thumb" onclick="changeImg(this,'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?q=80&w=800&auto=format&fit=crop')">
-                <img src="https://images.unsplash.com/photo-1620916566398-39f1143ab7be?q=80&w=200&auto=format&fit=crop">
-            </div>
-            <div class="thumb" onclick="changeImg(this,'https://images.unsplash.com/photo-1599305090598-fe179d501227?q=80&w=800&auto=format&fit=crop')">
-                <img src="https://images.unsplash.com/photo-1599305090598-fe179d501227?q=80&w=200&auto=format&fit=crop">
-            </div>
-            <div class="thumb" onclick="changeImg(this,'https://images.unsplash.com/photo-1556228578-8c89e6adf883?q=80&w=800&auto=format&fit=crop')">
-                <img src="https://images.unsplash.com/photo-1556228578-8c89e6adf883?q=80&w=200&auto=format&fit=crop">
-            </div>
+            @if(str_starts_with($product->foto, 'http'))
+                <img id="mainImgEl" src="{{ $product->foto }}" alt="{{ $product->nama_produk }}">
+            @else
+                <img id="mainImgEl" src="{{ asset('storage/' . $product->foto) }}" alt="{{ $product->nama_produk }}">
+            @endif
         </div>
     </div>
 
@@ -208,8 +197,8 @@
             <span class="tag-verified">✓ Terverifikasi</span>
         </div>
 
-        <div class="product-brand">Skintific</div>
-        <div class="product-name">5X Ceramide Barrier Repair Moisture Gel</div>
+        <div class="product-brand">{{ $product->brand ?? strtoupper($product->kategori) }}</div>
+        <div class="product-name">{{ $product->nama_produk }}</div>
 
         <div class="rating-row">
             <div class="stars">
@@ -220,15 +209,17 @@
             <span class="rating-num">4.0</span>
             <div class="rating-sep"></div>
             <span class="rating-info">Rating Penjual</span>
-            <div class="rating-sep"></div>
-            <span class="rating-info">120 produk dijual</span>
         </div>
 
-        <!-- HARGA — tanpa kotak, merah soft -->
+        @php
+            $diskon = $product->harga_asli ? round(($product->harga_asli - $product->harga) / $product->harga_asli * 100) : 0;
+        @endphp
         <div class="price-row">
-            <span class="price-now">Rp 95.000</span>
-            <span class="price-old">Rp 190.000</span>
-            <span class="price-disc">-50%</span>
+            <span class="price-now">Rp {{ number_format($product->harga, 0, ',', '.') }}</span>
+            @if($product->harga_asli)
+                <span class="price-old">Rp {{ number_format($product->harga_asli, 0, ',', '.') }}</span>
+                <span class="price-disc">-{{ $diskon }}%</span>
+            @endif
         </div>
 
         <hr class="divider">
@@ -239,26 +230,18 @@
         </div>
 
         <div class="kondisi-desc">
-            Preloved – Sisa 80%, masih tersegel. Beli 2 bulan lalu, tidak cocok dengan jenis kulit.
+            {{ $product->deskripsi }}
         </div>
 
         <!-- DETAIL GRID — efek tekan pink soft -->
         <div class="detail-grid">
             <div class="detail-item">
                 <div class="detail-key">Kondisi</div>
-                <div class="detail-val">Preloved (80%)</div>
+                <div class="detail-val">{{ ucfirst($product->kondisi) }}</div>
             </div>
             <div class="detail-item">
                 <div class="detail-key">Kategori</div>
-                <div class="detail-val">Skincare</div>
-            </div>
-            <div class="detail-item">
-                <div class="detail-key">Berat</div>
-                <div class="detail-val">50 gr</div>
-            </div>
-            <div class="detail-item">
-                <div class="detail-key">Expired</div>
-                <div class="detail-val">Agustus 2026</div>
+                <div class="detail-val">{{ ucfirst($product->kategori) }}</div>
             </div>
         </div>
 
@@ -303,12 +286,11 @@
         </div>
 
         <div class="action-buttons">
-            <a href="{{ route('keranjang') }}" class="btn-keranjang"
-               onclick="event.preventDefault(); showToast('🛒 Ditambahkan ke keranjang!')">
+            <button class="btn-keranjang" onclick="tambahKeKeranjang({{ $product->id }})">
                 <iconify-icon icon="mynaui:cart" width="17"></iconify-icon>
                 Tambah ke Keranjang
-            </a>
-            <a href="{{ route('checkout') }}" class="btn-beli">
+            </button>
+            <a href="{{ route('checkout', ['direct' => $product->id]) }}" class="btn-beli">
                 <iconify-icon icon="fluent:shopping-bag-48-filled" width="17"></iconify-icon>
                 Beli Sekarang
             </a>
@@ -343,6 +325,27 @@
         const t = document.getElementById('toast');
         t.textContent = msg; t.classList.add('show');
         clearTimeout(t._timer); t._timer = setTimeout(() => t.classList.remove('show'), 2800);
+    }
+
+    function tambahKeKeranjang(productId) {
+        fetch('{{ route("cart.store") }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                'Accept': 'application/json',
+            },
+            body: JSON.stringify({ product_id: productId, quantity: 1 }),
+        })
+        .then(r => r.json())
+        .then(data => {
+            if (data.success) {
+                showToast('🛒 ' + data.message);
+            } else {
+                showToast('❌ Gagal menambahkan ke keranjang');
+            }
+        })
+        .catch(() => showToast('❌ Terjadi kesalahan'));
     }
 </script>
 </body>

@@ -29,7 +29,11 @@ class DashboardController extends Controller
             ->where('status','confirmed')
             ->count();
 
-        $saldoKoin = $user->ayu_koin ?? 0;
+        $coin = \App\Models\Coin::firstOrCreate(
+            ['user_id' => $user->id],
+            ['saldo' => 0]
+        );
+        $saldoKoin = $coin->saldo;
 
         $riwayatDaurUlang = RecyclingSubmission::where('user_id', $user->id)
             ->latest() //urutkan yg terbaru

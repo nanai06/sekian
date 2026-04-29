@@ -623,7 +623,7 @@
                 <div class="shortcut-num">{{ $totalProdukDibeli }}
                     <iconify-icon icon="streamline-block:shopping-bag" width="45" style="opacity:0.5;"></iconify-icon>
                 </div>
-                <div class="shortcut-label">Produk Dibeli</div>
+                <div class="shortcut-label">Total Pembelian</div>
                 <div class="shortcut-sub">1 minggu ini</div>
                 <div class="shortcut-bottom"></div>
             </a>
@@ -633,7 +633,7 @@
                 <div class="shortcut-num">{{ $totalDaurUlang }}
                     <iconify-icon icon="fontisto:recycle" width="50" style="opacity:0.5;"></iconify-icon>
                 </div>
-                <div class="shortcut-label">Daur Ulang</div>
+                <div class="shortcut-label">Total Daur Ulang</div>
                 <div class="shortcut-sub">1 bulan ini</div>
                 <div class="shortcut-bottom"></div>
             </a>

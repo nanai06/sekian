@@ -79,4 +79,21 @@ class ProductController extends Controller
             ->with ('success', 'produk berhasil dihapus!');
     }
 
+    // detail produk untuk halaman ayu-ne (detail-produk blade)
+    public function detail($id){
+        $product = Product::findOrFail($id);
+        return view('detail-produk', compact('product'));
+    }
+
+    /**
+     * Halaman Ayu Belanja — nampilin semua produk dari database
+     * Produk yang ditampilkan hanya yang status = 'tersedia'
+     */
+    public function belanja(){
+        $products = Product::where('status', 'tersedia')
+            ->latest()
+            ->get();
+
+        return view('ayu-belanja', compact('products'));
+    }
 }

@@ -72,7 +72,7 @@
 
         <div class="order-id">
             <iconify-icon icon="ph:receipt-bold" width="14" style="color:#e07080;"></iconify-icon>
-            Order ID: #AYU-2026-00123
+            Order ID: #AYU-{{ $order ? str_pad($order->id, 5, '0', STR_PAD_LEFT) : '00000' }}
         </div>
 
         <div class="success-desc">
@@ -83,7 +83,7 @@
         {{-- Koin reward — emoji 🪙 --}}
         <div class="koin-reward">
             <span class="koin-emoji">🪙</span>
-            Kamu mendapat <strong>+10 Ayu Koin</strong> dari pesanan ini! 🎉
+            Kamu mendapat <strong>+{{ $koinReward }} Ayu Koin</strong> dari pesanan ini! 🎉
         </div>
 
         <div class="info-cards">
@@ -91,27 +91,27 @@
                 <div class="info-card-icon green">
                     <iconify-icon icon="ph:truck-bold" width="18" style="color:#4CAF7D;"></iconify-icon>
                 </div>
-                <div class="info-card-label">Estimasi Tiba</div>
-                <div class="info-card-val">2–3 hari kerja</div>
+                <div class="info-card-label">Total Bayar</div>
+                <div class="info-card-val">Rp {{ $order ? number_format($order->total_bayar, 0, ',', '.') : '0' }}</div>
             </div>
             <div class="info-card">
                 <div class="info-card-icon blue">
                     <iconify-icon icon="ph:bank-bold" width="18" style="color:#4A90D9;"></iconify-icon>
                 </div>
                 <div class="info-card-label">Pembayaran</div>
-                <div class="info-card-val">Transfer BCA</div>
+                <div class="info-card-val">{{ $order->metode_pengiriman ?? 'Midtrans' }}</div>
             </div>
             <div class="info-card">
                 <div class="info-card-icon yellow">
-                    <iconify-icon icon="ph:map-pin-bold" width="18" style="color:#F5A623;"></iconify-icon>
+                    <iconify-icon icon="ph:package-bold" width="18" style="color:#F5A623;"></iconify-icon>
                 </div>
-                <div class="info-card-label">Kurir</div>
-                <div class="info-card-val">JNE REG</div>
+                <div class="info-card-label">Jumlah Produk</div>
+                <div class="info-card-val">{{ $order ? $order->orderItems->count() : 0 }} item</div>
             </div>
         </div>
 
         <div class="action-buttons">
-            <a href="{{ route('pesanan-saya') }}" class="btn-lihat">
+            <a href="{{ $order ? route('detail-pesanan', $order->id) : route('pesanan-saya') }}" class="btn-lihat">
                 <iconify-icon icon="ph:package-bold" width="16"></iconify-icon>
                 Lihat Pesanan
             </a>

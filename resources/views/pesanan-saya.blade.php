@@ -125,10 +125,12 @@
             <div class="order-card" data-status="{{ $statusInfo['filter'] }}">
                 {{-- Thumbnail produk --}}
                 <div class="order-thumb">
-                    @if($productFoto)
+                    @if($productFoto && str_starts_with($productFoto, 'http'))
+                        <img src="{{ $productFoto }}" style="width:80px;height:80px;object-fit:cover;border-radius:12px;">
+                    @elseif($productFoto)
                         <img src="{{ asset('storage/' . $productFoto) }}" style="width:80px;height:80px;object-fit:cover;border-radius:12px;">
                     @else
-                        Product<br>Thumb
+                        <span style="font-size:10px;color:#c4a0a0;">No Photo</span>
                     @endif
                 </div>
                 <div class="order-info">
@@ -142,7 +144,7 @@
                     <div class="order-price">Rp {{ number_format($order->total_bayar, 0, ',', '.') }}</div>
                     <div class="order-actions">
                         <a href="{{ route('lacak-pesanan') }}" class="btn-lacak" style="text-decoration:none;">Lacak Pesanan</a>
-                        <a href="{{ route('detail-pesanan') }}" class="btn-detail" style="text-decoration:none;">Lihat Detail</a>
+                        <a href="{{ route('detail-pesanan', $order->id) }}" class="btn-detail" style="text-decoration:none;">Lihat Detail</a>
                     </div>
                 </div>
                 <div class="order-status">

@@ -11,7 +11,8 @@ class Cart extends Model
     protected $fillable = [
         'user_id',
         'product_id',
-        'seller_id'
+        'seller_id',
+        'quantity',
     ];
 
     //RELASI
@@ -21,7 +22,7 @@ class Cart extends Model
     }
 
     public function product(){
-        return $this->belongsTo(Product::class);
+        return $this->belongsTo(Product::class, 'product_id', 'id');
         //keranjang ini berisi satu produk kl ada produk lain line baru
     }
 

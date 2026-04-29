@@ -100,21 +100,6 @@
     }
 
     /* Badge merah kecil di pojok kanan atas ikon: menampilkan jumlah notif / item keranjang */
-    .badge {
-        position: absolute;
-        top: -6px;
-        right: -6px;
-        background: #e07080;
-        color: white;
-        font-size: 9px;
-        font-weight: 700;
-        width: 16px;
-        height: 16px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
 
     /* ==========================================
        AVATAR + DROPDOWN
@@ -188,14 +173,12 @@
              Redirect ke halaman notifikasi --}}
         <a href="{{ route('notifikasi') }}" class="nav-icon">
             <iconify-icon icon="basil:notification-outline" width="25"></iconify-icon>
-            <div class="badge">•</div>
         </a>
 
         {{-- Ikon keranjang belanja: badge angka menampilkan jumlah item
              Redirect ke halaman keranjang --}}
         <a href="{{ route('keranjang') }}" class="nav-icon">
             <iconify-icon icon="mynaui:cart" width="25"></iconify-icon>
-            <div class="badge">2</div>
         </a>
 
         {{-- Avatar + Dropdown (muncul saat hover)
@@ -216,7 +199,7 @@
                 </div>
 
                 {{-- Link ke halaman edit profil --}}
-                <a href="{{ route('profile.edit') }}" style="display: block; padding: 8px 12px; font-size: 13px; color: #7a4a4a; text-decoration: none;">
+                <a href="{{ route('profil') }}" style="display: block; padding: 8px 12px; font-size: 13px; color: #7a4a4a; text-decoration: none;">
                     Profile
                 </a>
 

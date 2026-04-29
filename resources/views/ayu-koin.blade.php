@@ -465,8 +465,8 @@
                 <div class="koin-icon-wrap">🪙</div>
                 Ayu Koin Kamu
             </div>
-            <div class="koin-number" id="koinNumber">1200</div>
-            <div class="koin-equiv">Setara Rp 50.000 voucher</div>
+            <div class="koin-number" id="koinNumber">{{ number_format($saldoKoin, 0, ',', '.') }}</div>
+            <div class="koin-equiv">Setara Rp {{ number_format(floor($saldoKoin / 100) * 5000, 0, ',', '.') }} voucher</div>
         </div>
         <button class="btn-tukar-voucher" onclick="bukaTukarModal()">Tukar Jadi Voucher</button>
     </div>
@@ -584,83 +584,75 @@
 
 <div id="rSemua">
         <div class="riwayat-list">
-            <div class="riwayat-item">
-                <div class="riwayat-icon masuk">
-                    <iconify-icon icon="fontisto:recycle" width="22"></iconify-icon>
+            @forelse($coinHistories as $ch)
+            <div class="riwayat-item" data-tipe="{{ $ch->tipe }}">
+                <div class="riwayat-icon {{ $ch->tipe }}">
+                    @if($ch->sumber === 'belanja')
+                        <iconify-icon icon="mynaui:cart" width="22"></iconify-icon>
+                    @elseif($ch->sumber === 'daur_ulang')
+                        <iconify-icon icon="fontisto:recycle" width="22"></iconify-icon>
+                    @else
+                        <iconify-icon icon="mynaui:tag" width="22"></iconify-icon>
+                    @endif
                 </div>
                 <div class="riwayat-info">
-                    <div class="riwayat-nama">Daur ulang 5 kemasan</div>
-                    <div class="riwayat-tgl">5 Maret 2026</div>
+                    <div class="riwayat-nama">{{ $ch->keterangan ?? ucfirst(str_replace('_', ' ', $ch->sumber)) }}</div>
+                    <div class="riwayat-tgl">{{ $ch->created_at->format('d M Y') }}</div>
                 </div>
-                <div class="riwayat-koin plus">+50 Koin</div>
+                <div class="riwayat-koin {{ $ch->tipe === 'masuk' ? 'plus' : 'minus' }}">
+                    {{ $ch->tipe === 'masuk' ? '+' : '-' }}{{ $ch->jumlah }} Koin
+                </div>
             </div>
-            <div class="riwayat-item">
-                <div class="riwayat-icon keluar">
-                    <iconify-icon icon="mynaui:tag" width="22"></iconify-icon>
-                </div>
-                <div class="riwayat-info">
-                    <div class="riwayat-nama">Tukar voucher 20%</div>
-                    <div class="riwayat-tgl">3 Maret 2026</div>
-                </div>
-                <div class="riwayat-koin minus">-500 Koin</div>
+            @empty
+            <div style="text-align:center; padding:30px; color:#9a6a6a; font-size:13px;">
+                Belum ada riwayat koin. Belanja atau daur ulang untuk dapat Ayu Koin!
             </div>
-            <div class="riwayat-item">
-                <div class="riwayat-icon masuk">
-                    <iconify-icon icon="fontisto:recycle" width="22"></iconify-icon>
-                </div>
-                <div class="riwayat-info">
-                    <div class="riwayat-nama">Daur ulang 3 kemasan</div>
-                    <div class="riwayat-tgl">28 Februari 2026</div>
-                </div>
-                <div class="riwayat-koin plus">+30 Koin</div>
-            </div>
+            @endforelse
         </div>
     </div>
 
     <div id="rMasuk" style="display:none;">
         <div class="riwayat-list">
+            @foreach($coinHistories->where('tipe', 'masuk') as $ch)
             <div class="riwayat-item">
                 <div class="riwayat-icon masuk">
-                    <iconify-icon icon="fontisto:recycle" width="22"></iconify-icon>
+                    @if($ch->sumber === 'belanja')
+                        <iconify-icon icon="mynaui:cart" width="22"></iconify-icon>
+                    @else
+                        <iconify-icon icon="fontisto:recycle" width="22"></iconify-icon>
+                    @endif
                 </div>
                 <div class="riwayat-info">
-                    <div class="riwayat-nama">Daur ulang 5 kemasan</div>
-                    <div class="riwayat-tgl">5 Maret 2026</div>
+                    <div class="riwayat-nama">{{ $ch->keterangan }}</div>
+                    <div class="riwayat-tgl">{{ $ch->created_at->format('d M Y') }}</div>
                 </div>
-                <div class="riwayat-koin plus">+50 Koin</div>
+                <div class="riwayat-koin plus">+{{ $ch->jumlah }} Koin</div>
             </div>
-            <div class="riwayat-item">
-                <div class="riwayat-icon masuk">
-                    <iconify-icon icon="fontisto:recycle" width="22"></iconify-icon>
-                </div>
-                <div class="riwayat-info">
-                    <div class="riwayat-nama">Daur ulang 3 kemasan</div>
-                    <div class="riwayat-tgl">28 Februari 2026</div>
-                </div>
-                <div class="riwayat-koin plus">+30 Koin</div>
-            </div>
+            @endforeach
         </div>
     </div>
 
     <div id="rKeluar" style="display:none;">
         <div class="riwayat-list">
+            @foreach($coinHistories->where('tipe', 'keluar') as $ch)
             <div class="riwayat-item">
                 <div class="riwayat-icon keluar">
                     <iconify-icon icon="mynaui:tag" width="22"></iconify-icon>
                 </div>
                 <div class="riwayat-info">
-                    <div class="riwayat-nama">Tukar voucher 20%</div>
-                    <div class="riwayat-tgl">3 Maret 2026</div>
+                    <div class="riwayat-nama">{{ $ch->keterangan }}</div>
+                    <div class="riwayat-tgl">{{ $ch->created_at->format('d M Y') }}</div>
                 </div>
-                <div class="riwayat-koin minus">-500 Koin</div>
+                <div class="riwayat-koin minus">-{{ $ch->jumlah }} Koin</div>
             </div>
+            @endforeach
         </div>
     </div>
 
 </div>
 
 <script>
-    let saldoKoin = 1200;
+    let saldoKoin = {{ $saldoKoin }};
     let selectedKoin = 200;
     let selectedVal = 10000;
 

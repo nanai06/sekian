@@ -87,6 +87,7 @@ class OrderController extends Controller
 
     /**
      * Update status order setelah pembayaran berhasil
+     * + reward Ayu Koin otomatis
      */
     public function updateStatus(Request $request)
     {
@@ -99,8 +100,50 @@ class OrderController extends Controller
             ->where('buyer_id', auth()->id())
             ->firstOrFail();
 
+        $oldStatus = $order->status;
         $order->update(['status' => $request->status]);
 
+        // ── REWARD AYU KOIN setelah pembayaran berhasil ──
+        // Hanya beri koin jika status berubah ke 'diproses' (dari menunggu_pembayaran)
+        if ($request->status === 'diproses' && $oldStatus === 'menunggu_pembayaran') {
+            $this->rewardKoin($order);
+        }
+
         return response()->json(['success' => true]);
+    }
+
+    /**
+     * Beri reward Ayu Koin ke pembeli
+     * Rumus: 1 koin per Rp 10.000 belanja, minimal 5 koin
+     */
+    private function rewardKoin(Order $order)
+    {
+        $user = $order->buyer;
+        $koinReward = max(5, floor($order->total_bayar / 10000));
+
+        // Update atau buat record di ayune_coins
+        $coin = \App\Models\Coin::firstOrCreate(
+            ['user_id' => $user->id],
+            ['saldo' => 0]
+        );
+
+        $saldoSebelum = $coin->saldo;
+        $saldoSesudah = $saldoSebelum + $koinReward;
+
+        $coin->update(['saldo' => $saldoSesudah]);
+
+        // Update juga kolom ayu_koin di users table
+        $user->update(['ayu_koin' => $saldoSesudah]);
+
+        // Catat di riwayat koin
+        \App\Models\CoinHistory::create([
+            'user_id'       => $user->id,
+            'jumlah'        => $koinReward,
+            'tipe'          => 'masuk',
+            'sumber'        => 'belanja',
+            'keterangan'    => 'Reward belanja pesanan #' . $order->id,
+            'saldo_sebelum' => $saldoSebelum,
+            'saldo_sesudah' => $saldoSesudah,
+        ]);
     }
 }

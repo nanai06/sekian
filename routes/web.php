@@ -25,13 +25,13 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::get('/profil', function () {
-    return view('profile.index');
-})->middleware(['auth'])->name('profil');
+use App\Http\Controllers\ProfilController;
 
-Route::get('/ayu-belanja', function () {
-    return view('ayu-belanja');
-})->middleware(['auth'])->name('ayu-belanja');
+Route::get('/profil', [ProfilController::class, 'index'])
+    ->middleware(['auth'])->name('profil');
+
+Route::get('/ayu-belanja', [App\Http\Controllers\ProductController::class, 'belanja'])
+    ->middleware(['auth'])->name('ayu-belanja');
 
 Route::get('/ayu-daur-ulang', function () {
     return view('ayu-daur-ulang');
@@ -40,21 +40,24 @@ Route::get('/ayu-daur-ulang', function () {
 Route::get('/dropoff-lokasi', [App\Http\Controllers\DropOffLocationController::class, 'index'])
     ->middleware(['auth'])->name('dropoff-lokasi');
 
-Route::get('/keranjang', function () {
-    return view('keranjang');
-})->middleware(['auth'])->name('keranjang');
+use App\Http\Controllers\CartController;
+
+Route::middleware('auth')->group(function () {
+    Route::get('/keranjang',         [CartController::class, 'index'])->name('keranjang');
+    Route::post('/keranjang',        [CartController::class, 'store'])->name('cart.store');
+    Route::patch('/keranjang/{id}',  [CartController::class, 'update'])->name('cart.update');
+    Route::delete('/keranjang/{id}', [CartController::class, 'destroy'])->name('cart.destroy');
+});
 
 Route::get('/notifikasi', function () {
     return view('notifikasi');
 })->middleware(['auth'])->name('notifikasi');
 
-Route::get('/detail-produk', function () {
-    return view('detail-produk');
-})->middleware(['auth'])->name('detail-produk');
+Route::get('/detail-produk/{id}', [App\Http\Controllers\ProductController::class, 'detail'])
+    ->middleware(['auth'])->name('detail-produk');
 
-Route::get('/checkout', function () {
-    return view('checkout');
-})->middleware(['auth'])->name('checkout');
+Route::get('/checkout', [CartController::class, 'checkout'])
+    ->middleware(['auth'])->name('checkout');
 
 Route::post('/checkout/process', [App\Http\Controllers\OrderController::class, 'process'])
     ->middleware(['auth'])->name('checkout.process');
@@ -67,11 +70,32 @@ Route::get('/chat-penjual', function () {
 })->middleware(['auth'])->name('chat-penjual');
 
 Route::get('/ayu-koin', function () {
-    return view('ayu-koin');
+    $user = auth()->user();
+    $coin = \App\Models\Coin::firstOrCreate(
+        ['user_id' => $user->id],
+        ['saldo' => 0]
+    );
+    $saldoKoin = $coin->saldo;
+    $coinHistories = \App\Models\CoinHistory::where('user_id', $user->id)
+        ->latest()
+        ->take(20)
+        ->get();
+    return view('ayu-koin', compact('saldoKoin', 'coinHistories'));
 })->middleware(['auth'])->name('ayu-koin');
 
-Route::get('/pesanan-berhasil', function () {
-    return view('pesanan-berhasil');
+Route::get('/pesanan-berhasil', function (\Illuminate\Http\Request $request) {
+    $order = null;
+    $koinReward = 0;
+    if ($request->has('order_id')) {
+        $order = \App\Models\Order::with('orderItems.product')
+            ->where('id', $request->order_id)
+            ->where('buyer_id', auth()->id())
+            ->first();
+        if ($order) {
+            $koinReward = max(5, floor($order->total_bayar / 10000));
+        }
+    }
+    return view('pesanan-berhasil', compact('order', 'koinReward'));
 })->middleware(['auth'])->name('pesanan-berhasil');
 
 Route::get('/pesanan-saya', function () {
@@ -82,8 +106,12 @@ Route::get('/pesanan-saya', function () {
     return view('pesanan-saya', compact('orders'));
 })->middleware(['auth'])->name('pesanan-saya');
 
-Route::get('/detail-pesanan', function () {
-    return view('detail-pesanan');
+Route::get('/detail-pesanan/{id}', function ($id) {
+    $order = \App\Models\Order::with(['orderItems.product', 'buyer'])
+        ->where('id', $id)
+        ->where('buyer_id', auth()->id())
+        ->firstOrFail();
+    return view('detail-pesanan', compact('order'));
 })->middleware(['auth'])->name('detail-pesanan');
 
 Route::get('/lacak-pesanan', function () {

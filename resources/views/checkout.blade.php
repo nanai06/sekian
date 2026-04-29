@@ -390,29 +390,27 @@
                 Ringkasan Pesanan
             </div>
 
+            @foreach($cartItems as $item)
             <div class="summary-produk">
                 <div class="summary-thumb">
-                    <img src="https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?q=80&w=200&auto=format&fit=crop">
+                    @if($item->product->foto && str_starts_with($item->product->foto, 'http'))
+                        <img src="{{ $item->product->foto }}">
+                    @elseif($item->product->foto)
+                        <img src="{{ asset('storage/' . $item->product->foto) }}">
+                    @endif
                 </div>
-                <div class="summary-produk-nama">5X Ceramide Barrier Repair Moisture Gel</div>
-                <div class="summary-produk-harga">Rp 95.000</div>
+                <div class="summary-produk-nama">{{ $item->product->nama_produk }} <span style="color:#9E7178;font-size:12px;">x{{ $item->quantity }}</span></div>
+                <div class="summary-produk-harga">Rp {{ number_format($item->product->harga * $item->quantity, 0, ',', '.') }}</div>
             </div>
-
-            <div class="summary-produk">
-                <div class="summary-thumb">
-                    <img src="https://images.unsplash.com/photo-1599305090598-fe179d501227?q=80&w=200&auto=format&fit=crop">
-                </div>
-                <div class="summary-produk-nama">Holyshield Sunscreen SPF 50</div>
-                <div class="summary-produk-harga">Rp 75.000</div>
-            </div>
+            @endforeach
 
             <hr class="summary-divider">
 
             <div class="summary-row">
-                <span>Subtotal (2 produk)</span><span>Rp 170.000</span>
+                <span>Subtotal ({{ $cartItems->sum('quantity') }} produk)</span><span>Rp {{ number_format($grandTotal, 0, ',', '.') }}</span>
             </div>
             <div class="summary-row">
-                <span>Ongkir</span><span id="ongkirVal">Rp 15.000</span>
+                <span>Ongkir</span><span id="ongkirVal">Belum dipilih</span>
             </div>
             <div class="summary-row diskon" id="diskonRow" style="display:none;">
                 <span>Diskon</span><span id="diskonVal">- Rp 0</span>
@@ -425,7 +423,7 @@
 
             <div class="summary-total">
                 <span>Total</span>
-                <span id="totalVal">Rp 185.000</span>
+                <span id="totalVal">Rp {{ number_format($grandTotal, 0, ',', '.') }}</span>
             </div>
 
             <button id="pay-button" class="btn-pesan">
@@ -446,7 +444,7 @@
     let ongkir      = 0;
     let diskonKoin  = 0;
     let diskonVouch = 0;
-    const subtotal  = 170000;
+    const subtotal  = {{ $grandTotal }};
     const koinNilai = 15000;
     let csrfToken   = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
     let searchTimer = null;
@@ -742,7 +740,13 @@
                 nama         : nama,
                 hp           : hp,
                 metode_bayar : document.getElementById('bayarVal').textContent,
-                produk_names : produkNames
+                produk_names : produkNames,
+                items        : [
+                    @foreach($cartItems as $item)
+                    { product_id: {{ $item->product_id }}, seller_id: {{ $item->product->user_id }}, harga: {{ $item->product->harga * $item->quantity }}, quantity: {{ $item->quantity }} },
+                    @endforeach
+                ],
+                is_direct    : {{ isset($isDirect) && $isDirect ? 'true' : 'false' }}
             })
         })
         .then(res => res.json())
@@ -768,7 +772,7 @@
                                 status: 'diproses'
                             })
                         }).finally(() => {
-                            window.location.href = "{{ route('pesanan-berhasil') }}";
+                            window.location.href = "{{ route('pesanan-berhasil') }}?order_id=" + savedOrderId;
                         });
                     },
                     onPending: function (result) {
