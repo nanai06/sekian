@@ -92,10 +92,7 @@
         }
         .btn-edit-profil:hover { background:#b8436a; transform:translateY(-1px); }
 
-        /* ==========================================
-           CARD INFORMASI AKUN
-           ========================================== */
-        .info-card {
+        .info-card{
             background:white;
             border:0.5px solid #E8E3DF;
             border-radius:16px;
@@ -103,23 +100,115 @@
             margin-bottom:12px;
         }
         .info-card-title {
-            font-size:15px; font-weight:700; color:#3b1a1a;
-            margin-bottom:16px;
+            font-size: 15px;
+            font-weight: 700;
+            color: #3b1a1a;
+            margin-bottom: 14px;
         }
+
         .info-row {
-            display:flex; align-items:flex-start; gap:12px;
-            padding:10px 0;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 10px 0;
         }
-        .info-row + .info-row { border-top:0.5px solid #F3F1EE; }
+        .info-row + .info-row {
+            border-top: 0.5px solid #F3F1EE;
+        }
+
         .info-icon {
-            flex-shrink:0;
-            width:32px; height:32px;
-            background:#FBEAF0;
-            border-radius:8px;
-            display:flex; align-items:center; justify-content:center;
+            width: 28px;
+            height: 28px;
+            border-radius: 8px;
+            background: #FBEAF0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-top: 2px;
         }
-        .info-label { font-size:11px; color:#9E7178; }
-        .info-value { font-size:13px; font-weight:500; color:#3b1a1a; margin-top:1px; }
+
+        .info-label {
+            font-size: 11px;
+            color: #9E7178;
+            font-weight: 500;
+            margin-bottom: 2px;
+        }
+
+        .info-value {
+            font-size: 13px;
+            color: #3b1a1a;
+            font-weight: 500;
+        }
+        .info-value.empty {
+            color: #9E7178;
+            font-style: italic;
+        }
+                /* MULAI JUAL */
+        .jual-banner {
+            background: linear-gradient(135deg, #ffe8ed 0%, #f5a5b6 50%, #ffdde4 100%);
+            border: 0.5px solid #b85c65;
+            position: relative;
+            border-radius: 16px;
+            padding: 35px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 12px;
+        }
+
+        .jual-banner-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .jual-banner-icon {
+            width: 50px; height: 50px;
+            color: #D4537E;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .jual-banner-title {
+            font-size: 14px; font-weight: 700; color: #3b1a1a;
+            margin-bottom: 2px;
+        }
+
+        .jual-banner-sub {
+            font-size: 11px; color: #390c13;
+        }
+
+        .btn-mulai-jual {
+            padding: 8px 20px;
+            background: #ffffff;
+            border: none;
+            border-radius: 20px;
+            font-size: 12px; font-weight: 600;
+            color: #D4537E;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            white-space: nowrap;
+            flex-shrink: 0;
+            transition: background 0.2s;
+        }
+         /* SPARK EFFECT */
+        .spark {
+            position: absolute;
+            pointer-events: none;
+        }
+        .spark svg {
+            animation: sparkle 2s ease-in-out infinite;
+        }
+        .spark:nth-child(2) svg { animation-delay: 0.4s; }
+        .spark:nth-child(3) svg { animation-delay: 0.8s; }
+        .spark:nth-child(4) svg { animation-delay: 1.2s; }
+
+        @keyframes sparkle {
+            0%, 100% { opacity: 0.3; transform: scale(0.7) rotate(0deg); }
+            50% { opacity: 1; transform: scale(1.1) rotate(15deg); }
+        }
 
         /* ==========================================
            RIWAYAT PESANAN PREVIEW
@@ -142,7 +231,7 @@
             transition:color 0.2s;
         }
         .riwayat-link:hover { color:#993556; }
-
+         
         .order-item {
             display:flex; align-items:center; gap:12px;
             padding:10px 0;
@@ -281,6 +370,33 @@
                 Edit Profil
             </a>
         </div>
+
+        <!--  Mulai Jual -->
+        <div class="jual-banner">
+            <div class="spark" style="top: 14px; right: 160px;">
+            <svg width="28" height="28" viewBox="0 0 24 24"><path d="M12 2 L13.5 10 L22 12 L13.5 14 L12 22 L10.5 14 L2 12 L10.5 10 Z" fill="rgba(255,255,255,0.8)"/></svg>
+            </div>
+            <div class="spark" style="top: 40px; right: 120px;">
+                <svg width="16" height="16" viewBox="0 0 24 24"><path d="M12 2 L13.5 10 L22 12 L13.5 14 L12 22 L10.5 14 L2 12 L10.5 10 Z" fill="rgba(255,255,255,0.6)"/></svg>
+            </div>
+            <div class="spark" style="bottom: 20px; right: 180px;">
+                <svg width="20" height="20" viewBox="0 0 24 24"><path d="M12 2 L13.5 10 L22 12 L13.5 14 L12 22 L10.5 14 L2 12 L10.5 10 Z" fill="rgba(255,255,255,0.7)"/></svg>
+            </div>
+            <div class="spark" style="top: 20px; left: 220px;">
+                <svg width="14" height="14" viewBox="0 0 24 24"><path d="M12 2 L13.5 10 L22 12 L13.5 14 L12 22 L10.5 14 L2 12 L10.5 10 Z" fill="rgba(255,255,255,0.5)"/></svg>
+            </div>
+        <div class="jual-banner-left">
+            <div class="jual-banner-icon">
+            <iconify-icon icon="bi:bag-heart-fill" width="30" height="30"></iconify-icon>
+        </div>
+            <div>
+                <div class="jual-banner-title">Mulai Jual Produkmu</div>
+                <div class="jual-banner-sub">Jual produk preloved beauty-mu & raih penghasilan tambahan</div>
+            </div>
+        </div>
+        <a href="{{ route('seller.register.step', 1) }}" class="btn-mulai-jual">Mulai Jual</a>
+    </div>
+
 
         {{-- ==========================================
              BAGIAN 2: INFORMASI AKUN

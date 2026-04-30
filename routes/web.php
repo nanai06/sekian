@@ -4,6 +4,8 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RecyclingController;
 use App\Http\Controllers\ShippingController;
+use App\Http\Controllers\Seller\SellerRegistrationController;
+
 
 // API Pengiriman (RajaOngkir V2 via Komerce)
 Route::get('/api/shipping/search-destination', [ShippingController::class, 'searchDestination'])->name('api.shipping.search');
@@ -126,3 +128,24 @@ Route::middleware('auth')->group(function () {
     Route::get('/daur-ulang-sukses', [RecyclingController::class, 'sukses'])->name('daur-ulang-sukses');
 });
 require __DIR__.'/auth.php';
+
+Route::prefix('jual')->name('seller.')->group(function () {
+
+    Route::get('/', [SellerRegistrationController::class, 'index'])
+        ->name('register');
+
+    // dynamic step
+    Route::get('/step/{step}', [SellerRegistrationController::class, 'showStep'])
+        ->name('register.step');
+
+    // simpan per step
+    Route::post('/step/1', [SellerRegistrationController::class, 'saveStep1'])
+        ->name('register.step1.store');
+
+    Route::post('/step/2', [SellerRegistrationController::class, 'saveStep2'])
+        ->name('register.step2.store');
+
+    // selesai onboarding
+    Route::post('/finish', [SellerRegistrationController::class, 'finishOnboarding'])
+        ->name('register.finish');
+});
