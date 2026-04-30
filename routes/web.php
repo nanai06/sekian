@@ -129,7 +129,7 @@ Route::middleware('auth')->group(function () {
 });
 require __DIR__.'/auth.php';
 
-Route::prefix('jual')->name('seller.')->group(function () {
+Route::prefix('jual')->middleware('auth')->name('seller.')->group(function () {
 
     Route::get('/', [SellerRegistrationController::class, 'index'])
         ->name('register');

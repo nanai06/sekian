@@ -112,7 +112,7 @@
 
     {{-- Bottom buttons --}}
     <div class="bottom-btns" style="position:fixed;bottom:0;left:0;right:0;max-width:480px;margin:0 auto;">
-        <a href="{{ route('home') }}" class="btn-back" style="display:flex;align-items:center;justify-content:center;text-decoration:none;">Kembali</a>
+        <a href="{{ route('dashboard') }}" class="btn-back" style="display:flex;align-items:center;justify-content:center;text-decoration:none;">Kembali</a>
         <button type="submit" class="btn-next">Lanjut</button>
     </div>
 </form>

@@ -81,7 +81,7 @@ class SellerRegistrationController extends Controller
             ]
         );
 
-        return redirect()->route('Seller.Register.step', ['step' => 2])
+        return redirect()->route('seller.register.step', ['step' => 2])
             ->with('success', 'Data diri berhasil disimpan!');
     }
 

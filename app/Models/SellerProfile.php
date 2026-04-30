@@ -16,16 +16,19 @@ class SellerProfile extends Model
         'nik',
         'foto_ktp',
         'foto_selfie',
+        'verifikasi_wajah',
         'setuju_syarat',
         'status_verifikasi',
         'catatan_admin',
         'step_selesai',
+        'verified_at',
     ];
 
     protected $casts = [
-        'setuju_syarat'     => 'boolean',
-        // Cast otomatis ke Enum — tidak perlu string manual lagi
-        'status_verifikasi' => SellerVerificationStatus::class,
+        'setuju_syarat'      => 'boolean',
+        'verifikasi_wajah'   => 'boolean',
+        'status_verifikasi'  => SellerVerificationStatus::class,
+        'verified_at'        => 'datetime',
     ];
 
     // ── Relasi ──────────────────────────────────────────────
@@ -42,23 +45,45 @@ class SellerProfile extends Model
 
     // ── Helper ──────────────────────────────────────────────
 
+    public function isAktif(): bool
+    {
+        return $this->status_verifikasi === SellerVerificationStatus::Aktif;
+    }
+
+    public function currentStep(): int
+    {
+        return match ($this->status_verifikasi) {
+            SellerVerificationStatus::Step1Done => 2,
+            SellerVerificationStatus::Step2Done => 3,
+            SellerVerificationStatus::Aktif     => 3,
+            default                             => 1,
+        };
+    }
+
     public function step1Selesai(): bool
     {
-        return $this->step_selesai >= 1;
+        return in_array($this->status_verifikasi, [
+            SellerVerificationStatus::Step1Done,
+            SellerVerificationStatus::Step2Done,
+            SellerVerificationStatus::Aktif,
+        ]);
     }
 
     public function step2Selesai(): bool
     {
-        return $this->step_selesai >= 2;
+        return in_array($this->status_verifikasi, [
+            SellerVerificationStatus::Step2Done,
+            SellerVerificationStatus::Aktif,
+        ]);
     }
 
     public function onboardingSelesai(): bool
     {
-        return $this->step_selesai >= 3;
+        return $this->status_verifikasi === SellerVerificationStatus::Aktif;
     }
 
     public function sudahDiverifikasi(): bool
     {
-        return $this->status_verifikasi === SellerVerificationStatus::Approved;
+        return $this->status_verifikasi === SellerVerificationStatus::Aktif;
     }
 }
