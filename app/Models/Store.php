@@ -42,10 +42,9 @@ class Store extends Model
     {
         return $this->hasMany(StoreAddress::class);
     }
-
-    public function alamatUtama(): HasOne
+    public function primaryAddress()
     {
-        return $this->hasOne(StoreAddress::class)->where('is_utama', true);
+        return $this->addresses()->first();
     }
 
     public function products(): HasMany

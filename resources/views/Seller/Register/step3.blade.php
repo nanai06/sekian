@@ -5,12 +5,19 @@
 @section('form-id', 'form-step3')
 
 @section('content')
-<div style="padding:1rem 1.25rem 0;">
-    <p style="font-size:14px;font-weight:500;color:#333;margin-bottom:4px;">Upload produk pertama kamu</p>
-    <p style="font-size:12px;color:#888;line-height:1.5;">Tambahkan minimal 1 produk untuk mengaktifkan tokomu di AYU-NE.</p>
+<div style="padding:1rem 1.25rem 0;display:flex;justify-content:space-between;align-items:center;">
+    <div>
+        <p style="font-size:14px;font-weight:500;color:#333;margin-bottom:4px;">Upload produk pertama kamu</p>
+        <p style="font-size:12px;color:#888;line-height:1.5;">Tambahkan minimal 1 produk untuk mengaktifkan tokomu di AYU-NE.</p>
+    </div>
+    <button type="button"
+            onclick="document.getElementById('form-skip3').submit()"
+            style="background:none;border:none;color:#C2617A;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;padding:0;flex-shrink:0;margin-left:12px; margin-bottom:55px;">
+        Lewati →
+    </button>
 </div>
 
-{{-- Form produk diarahkan ke SellerProductController@storeOnboarding --}}
+{{-- Form produk utama --}}
 <form id="form-step3"
       action="{{ route('seller.register.finish') }}"
       method="POST"
@@ -152,12 +159,37 @@
         </div>
     </div>
 
-    {{-- Bottom buttons --}}
-    <div class="bottom-btns" style="position:fixed;bottom:0;left:0;right:0;max-width:480px;margin:0 auto;">
-        <a href="{{ route('seller.register.step', ['step' => 2]) }}" class="btn-back" style="display:flex;align-items:center;justify-content:center;text-decoration:none;">Kembali</a>
-        <button type="submit" class="btn-next">Selesaikan</button>
-    </div>
+    {{-- Spacer biar konten gak ketutup bottom-btns --}}
+    <div style="height:80px;"></div>
+
 </form>
+
+{{-- Form skip — TERPISAH dari form utama agar tidak nested --}}
+<form id="form-skip3"
+      action="{{ route('seller.register.skip3') }}"
+      method="POST"
+      style="display:none;">
+    @csrf
+</form>
+
+{{-- Bottom buttons — di luar kedua form --}}
+<div class="bottom-btns" style="position:fixed;bottom:0;left:0;right:0;max-width:480px;margin:0 auto;display:flex;gap:8px;">
+
+    <a href="{{ route('seller.register.step', ['step' => 2]) }}"
+       class="btn-back"
+       style="flex:1;display:flex;align-items:center;justify-content:center;text-decoration:none;">
+        Kembali
+    </a>
+
+    {{-- Tombol Selesaikan submit form-step3 via JS --}}
+    <button type="button"
+            onclick="document.getElementById('form-step3').submit()"
+            class="btn-next"
+            style="flex:1;">
+        Selesaikan
+    </button>
+
+</div>
 
 <script>
 function updateCount(input, countId) {
@@ -203,7 +235,6 @@ function previewFoto(input) {
         reader.readAsDataURL(file);
     });
 }
-// Init kondisi chips on load
 document.addEventListener('DOMContentLoaded', () => {
     const checked = document.querySelector('.kond-radio:checked');
     if (checked) updateKondisi(checked);

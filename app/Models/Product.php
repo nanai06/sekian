@@ -2,40 +2,72 @@
 
 namespace App\Models;
 
+use App\Enums\ProductStatus;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Product extends Model
 {
     protected $table = 'ayune_products';
-    // model ini buat ayune ptofuk
 
     protected $fillable = [
         'user_id',
+        'category_id',
         'nama_produk',
-        'brand',
-        'kategori',
+        'merek',
         'kondisi',
+        'persen_sisa',
+        'catatan_kondisi',
         'deskripsi',
         'harga',
-        'harga_asli',
+        'berat_gram',
+        'stok',
         'foto',
-        'status'
+        'status',
     ];
-    //protek cmn ini kolom yg boleh diisii dr form gada kolom lain yg blh
 
-    //relasi ke table user BELONG BBRTI SATU
-    public function user(){
+    protected $casts = [
+        'foto'   => 'array',          // otomatis json <-> array
+        'status' => ProductStatus::class,
+        'harga'  => 'decimal:2',
+    ];
+
+    // ──────────────── Relasi ────────────────
+
+    public function user(): BelongsTo
+    {
         return $this->belongsTo(User::class);
     }
 
-    public function orderItems(){
-        return $this->hasMany(Order::class);
-        //satu produk bisa masuk ke bnyk order (order tu udh co ya), nh logika
-        //nya harusny satu doang kn preloved cmn ya jaga jaga aja jd bisa bnyk produk di co org
-    }   
+    public function category(): BelongsTo
+    {
+        return $this->belongsTo(Category::class, 'category_id');
+    }
 
-    public function carts(){
-        return $this->hasMany(Cart::class);
-        //satu produk bisa ada di bnyk kernjang
+    // ──────────────── Accessor ────────────────
+
+    // Ambil foto pertama (buat thumbnail)
+    public function getFotoUtamaAttribute(): ?string
+    {
+        $fotos = $this->foto;
+        return $fotos[0] ?? null;
+    }
+
+    // Harga format rupiah
+    public function getHargaRupiahAttribute(): string
+    {
+        return 'Rp ' . number_format($this->harga, 0, ',', '.');
+    }
+
+    // ──────────────── Scope ────────────────
+
+    public function scopeAktif($query)
+    {
+        return $query->where('status', ProductStatus::Aktif);
+    }
+
+    public function scopeMilik($query, $userId)
+    {
+        return $query->where('user_id', $userId);
     }
 }

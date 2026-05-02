@@ -374,7 +374,7 @@
         <!--  Mulai Jual / Toko Saya -->
         @if($user->sellerProfile && $user->sellerProfile->onboardingSelesai())
         {{-- USER SUDAH TERDAFTAR SEBAGAI PENJUAL --}}
-        <div class="jual-banner" style="background: linear-gradient(135deg, #EAF3DE 0%, #C5E0A0 50%, #EAF3DE 100%); border-color: #7aab3a;">
+        <div class="jual-banner" style="background: linear-gradient(135deg, #e6f3de 0%, #a5d791 50%, #e6f3de 100%); border-color: #7aab3a;">
             <div class="spark" style="top: 14px; right: 160px;">
             <svg width="28" height="28" viewBox="0 0 24 24"><path d="M12 2 L13.5 10 L22 12 L13.5 14 L12 22 L10.5 14 L2 12 L10.5 10 Z" fill="rgba(255,255,255,0.8)"/></svg>
             </div>

@@ -90,10 +90,10 @@ class ProductController extends Controller
      * Produk yang ditampilkan hanya yang status = 'tersedia'
      */
     public function belanja(){
-        $products = Product::where('status', 'tersedia')
-            ->latest()
-            ->get();
+    $products = Product::where('status', 'aktif')
+        ->latest()
+        ->get();
 
-        return view('ayu-belanja', compact('products'));
+    return view('ayu-belanja', compact('products'));
     }
 }

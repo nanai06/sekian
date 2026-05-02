@@ -279,7 +279,7 @@
                     </div>
                 </div>
             </div>
-            <a href="{{ route('chat-penjual') }}" class="btn-chat">
+            <a href="{{ route('chat.show', $product->user_id) }}" class="btn-chat">
                 <iconify-icon icon="ph:chat-circle-dots-bold" width="14"></iconify-icon>
                 Chat Penjual
             </a>

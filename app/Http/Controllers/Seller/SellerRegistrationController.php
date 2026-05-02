@@ -188,4 +188,16 @@ class SellerRegistrationController extends Controller
         return redirect()->route('seller.dashboard')
             ->with('success', 'Selamat! Toko kamu sudah aktif di AYU-NE 🌸');
     }
+    // ─── SKIP STEP 3: Langsung aktifkan toko tanpa produk ────────
+    public function skipStep3()
+    {
+        $profile = Auth::user()->sellerProfile;
+        $profile->update([
+            'status_verifikasi' => 'aktif',
+            'verified_at'       => now(),
+        ]);
+
+        return redirect()->route('seller.dashboard')
+            ->with('success', 'Toko kamu sudah aktif! Yuk tambah produk kapanpun kamu siap 🌿');
+    }
 }

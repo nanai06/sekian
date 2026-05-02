@@ -6,13 +6,20 @@ use App\Http\Controllers\RecyclingController;
 use App\Http\Controllers\ShippingController;
 use App\Http\Controllers\Seller\SellerRegistrationController;
 use App\Http\Controllers\Seller\SellerDashboardController;
+use App\Http\Controllers\Seller\SellerOrderController;
+use App\Http\Controllers\Seller\SellerChatController;
+use App\Http\Controllers\ChatController;
 
 
 // API Pengiriman (RajaOngkir V2 via Komerce)
 Route::get('/api/shipping/search-destination', [ShippingController::class, 'searchDestination'])->name('api.shipping.search');
 Route::post('/api/shipping/rates', [ShippingController::class, 'getRates'])->name('api.shipping.rates');
 
-
+Route::middleware('auth')->group(function () {
+    Route::get('/chat', [ChatController::class, 'index'])->name('chat.index');
+    Route::get('/chat/{seller}', [ChatController::class, 'show'])->name('chat.show');
+    Route::post('/chat/kirim', [ChatController::class, 'send'])->name('chat.send');
+});
 
 Route::get('/', function () {
     return view('welcome');
@@ -153,4 +160,32 @@ Route::prefix('jual')->middleware('auth')->name('seller.')->group(function () {
     // selesai onboarding
     Route::post('/finish', [SellerRegistrationController::class, 'finishOnboarding'])
         ->name('register.finish');
+    
+    Route::post('/skip-step3', [SellerRegistrationController::class, 'skipStep3'])
+    ->name('register.skip3');
+    require base_path('routes/seller_produk.php');
+
+    // Pesanan penjual
+    Route::get('/pesanan', [SellerOrderController::class, 'index'])
+        ->name('pesanan.index');
+
+    // Edit Profil Toko
+    Route::get('/toko/edit', [SellerDashboardController::class, 'editToko'])
+        ->name('toko.edit');
+    Route::patch('/toko/update', [SellerDashboardController::class, 'updateToko'])
+        ->name('toko.update');
+
+    // Statistik
+    Route::get('/statistik', [SellerDashboardController::class, 'statistik'])
+        ->name('statistik');
+
+    // Keuangan
+    Route::get('/keuangan', [SellerDashboardController::class, 'keuangan'])
+        ->name('keuangan');
+
+    // Chat pembeli
+    Route::get('/chat', [SellerChatController::class, 'index'])
+        ->name('chat.index');
+    Route::get('/chat/{buyer}', [SellerChatController::class, 'show'])
+        ->name('chat.show');
 });

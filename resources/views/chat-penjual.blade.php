@@ -178,7 +178,7 @@
 
 <!-- CHAT HEADER -->
 <div class="chat-header">
-    <a href="{{ route('detail-produk') }}" class="back-btn">←</a>
+    <a href="{{ url()->previous() }}" class="back-btn">←</a>
     <div class="seller-avatar">S</div>
     <div>
         <div class="seller-name">Sarah Beauty Store</div>
